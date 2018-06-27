@@ -14,9 +14,9 @@ exports.createPost = function(req, res){
 }
 
 exports.viewPosts = function(req, res){
-    model.find(function(err, posts){
-        if (err) res.json({err: err, message: 'something went wrong while fetching posts'});
-        res.json(posts);
+    model.find({}).populate('user').exec(function(err, data){
+        if (err) res.json(err);
+        res.json(data);
     });
 }
 
@@ -41,6 +41,14 @@ exports.editPost = function(req, res){
 }
 
 exports.viewPostsByUser = function(req, res){
+    var user = req.params.userId;
+    model.find({user:user}, 'postBody', function(err, data){
+        if (err) res.json({err:err, message:'sorry, something went wrong while retrieving user posts'});
+        res.json({message: data});
+    });
+}
+
+exports.viewPostsByUserId = function(req, res){
     var user = req.params.userId;
     model.find({user:user}, 'postBody', function(err, data){
         if (err) res.json({err:err, message:'sorry, something went wrong while retrieving user posts'});
