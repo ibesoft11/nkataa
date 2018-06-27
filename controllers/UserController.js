@@ -13,7 +13,7 @@ exports.addUser = function(req, res){
     return service.addUser(req, res, data);
 }
 exports.deleteUser = function(req, res){
-    var data = req.query;
+    var data = {_id:req.params.id};
     return service.deleteUser(req, res, data);
 }
 exports.getUserByParam = function(req, res){
