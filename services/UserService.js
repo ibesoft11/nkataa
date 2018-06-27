@@ -8,10 +8,10 @@ exports.getUserById = function(req, res, id){
 }
 
 exports.getAllUsers = function(req, res){
-    repository.get({}, function(err, users){
-        if (err) res.json({err:err, message:'error, could not retrieve users'});
-        res.json(users);
-    });
+    repository.getWithPopulate({},'[posts]', function(err, data){
+        if (err) res.json({err:err, message:'sorry an error occured while retrieving records'});
+        res.json(data);
+    })
 }
 
 exports.getUsersByParam = function(req, res, options){
