@@ -7,6 +7,10 @@ BaseRepository.prototype.get = function(options, callback){
     this.model.find(options, callback);
 }
 
+BaseRepository.prototype.getWithPopulate = function(options, param, callback){
+    this.model.find(options).populate(param).exec(callback);
+}
+
 BaseRepository.prototype.add = function(data, callback){
     this.model.create(data, callback);
 }
