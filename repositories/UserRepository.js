@@ -5,5 +5,4 @@ function UserRepository(){
 
 }
 UserRepository.prototype = BaseRepository(model);
-
 module.exports = new UserRepository();
