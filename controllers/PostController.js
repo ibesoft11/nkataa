@@ -1,57 +1,27 @@
 var model = require('../models/Post');
 
-exports.createPost = function(req, res){
+var service = require('../services/PostService');
+
+exports.getPosts = function(req, res){
+    return service.getAllPosts(req, res);
+}
+exports.addPost = function(req, res){
     var data = {
-        time: Date.now(),
-        postBody: req.body.postBody,
-        user: req.body.user,
-        comments: [],
-    }
-    model.create(data, function(err){
-        if (err) res.json({err: err, message: 'Sorry, the post could not be created'});
-        res.json({message: 'post created successfully'});
-    });
+        postBody: req.body.name,
+        user: req.body.email,
+    };
+    return service.addPost(req, res, data);
 }
-
-exports.viewPosts = function(req, res){
-    model.find({}).populate('user').exec(function(err, data){
-        if (err) res.json(err);
-        res.json(data);
-    });
-}
-
 exports.deletePost = function(req, res){
-    var options = {_id: req.params.id};
-    model.remove(options, function(err){
-        if (err) res.json({err:err, message:'an error occurred while deleting the post'});
-        res.json({message: 'post deleted'});
-    });
+    var data = {_id:req.params.id};
+    return service.deletePost(req, res, data);
 }
-
-exports.editPost = function(req, res){
-    var id = req.body.id;
-    model.findById(id, function(err, post){
-        if (err) res.json({err:err, message:'sorry, an error occurred while editing the post'});
-        if (req.body.postBody) post.postBody = req.body.postBody;
-        post.save(function (err, updatedPost){
-            if (err) res.json({err:err, message:'sorry an error occurred while editing the post'});
-            res.json(updatedPost);
-        });
-    });
+exports.getPostByParam = function(req, res){
+    var options = req.query;
+    return service.getPostByParam(req, res, options);
 }
-
-exports.viewPostsByUser = function(req, res){
-    var user = req.params.userId;
-    model.find({user:user}, 'postBody', function(err, data){
-        if (err) res.json({err:err, message:'sorry, something went wrong while retrieving user posts'});
-        res.json({message: data});
-    });
-}
-
-exports.viewPostsByUserId = function(req, res){
-    var user = req.params.userId;
-    model.find({user:user}, 'postBody', function(err, data){
-        if (err) res.json({err:err, message:'sorry, something went wrong while retrieving user posts'});
-        res.json({message: data});
-    });
+exports.updatePost = function(req, res){
+    var id = req.params.id
+    var options = req.body;
+    return service.updatePost(req, res, id, options);
 }
