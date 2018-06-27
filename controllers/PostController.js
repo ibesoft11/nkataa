@@ -7,8 +7,9 @@ exports.getPosts = function(req, res){
 }
 exports.addPost = function(req, res){
     var data = {
-        postBody: req.body.name,
-        user: req.body.email,
+        postBody: req.body.postBody,
+        user: req.body.user,
+        time: Date.now()
     };
     return service.addPost(req, res, data);
 }
