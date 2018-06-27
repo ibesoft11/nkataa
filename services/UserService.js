@@ -16,7 +16,7 @@ exports.getAllUsers = function(req, res){
 
 exports.getUsersByParam = function(req, res, options){
     repository.get(options, function(err, users){
-        if (err) res.json(err);
+        if (err) res.json({err:err, message:'error, could not retrieve user record'});
         res.json(users);
     })
 }
