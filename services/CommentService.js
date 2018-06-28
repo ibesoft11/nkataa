@@ -1,4 +1,5 @@
 var repository = require('../repositories/CommentRepository');
+var postRepository = require('../repositories/PostRepository');
 
 exports.getCommentById = function(req, res, id){
     repository.getById(id, function(err, comment){
@@ -8,7 +9,7 @@ exports.getCommentById = function(req, res, id){
 }
 
 exports.getAllComments = function(req, res){
-    repository.getWithPopulate({},'post', function(err, comments){
+    repository.getWithPopulate({},'-__v',  {path:'post',select:'-__v -comments'},'', function(err, comments){
         if (err) res.json({err:err, message:'error, could not retrieve comments'});
         res.json(comments);
     });
@@ -22,9 +23,13 @@ exports.getCommentByParam = function(req, res, options){
 }
 
 exports.addComment = function(req, res, data){
-    repository.add(data, function(err){
-        if (err) res.json({err:err, message:'error, comment could not be made.'});
-        res.json({message: 'comment added successfully'});
+    repository.add(data, function(err, comment){
+        postRepository.getById(data.post, function(err, post){
+            post.comments.push(comment._id);
+            post.save();
+            if (err) res.json({err:err, message:'error, comment could not be made.'});
+            res.json({message: 'comment added successfully'});
+        });
     });
 }
 
