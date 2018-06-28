@@ -1,4 +1,5 @@
 var repository = require('../repositories/PostRepository');
+var userRepository = require('../repositories/UserRepository');
 
 exports.getPostById = function(req, res, id){
     repository.getById(id, function(err, post){
@@ -8,7 +9,7 @@ exports.getPostById = function(req, res, id){
 }
 
 exports.getAllPosts = function(req, res){
-    repository.getWithPopulate({},'user', function(err, posts){
+    repository.getWithPopulate({},'-__v', {path:'comments',select:'-__v'},'', function(err, posts){
         if (err) res.json({err:err, message:'error, could not retrieve posts'});
         res.json(posts);
     });
@@ -18,13 +19,17 @@ exports.getPostByParam = function(req, res, options){
     repository.get(options, function(err, posts){
         if (err) res.json({err:err, message:'error, could not retrieve posts'});
         res.json(posts);
-    })
+    });
 }
 
 exports.addPost = function(req, res, data){
-    repository.add(data, function(err){
-        if (err) res.json({err:err, message:'error, post could not be created.'});
-        res.json({message: 'post created successfully'});
+    repository.add(data, function(err, post){
+        userRepository.getById(data.user, function(err, user){
+            user.posts.push(data);
+            user.save();
+            if (err) res.json({err:err, message:'error, post could not be created.'});
+            res.json({message: 'post created successfully'});
+        });
     });
 }
 
