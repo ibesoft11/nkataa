@@ -11,14 +11,14 @@ exports.getAllUsers = function(req, res){
     repository.getWithPopulate({},'[posts]', function(err, data){
         if (err) res.json({err:err, message:'sorry an error occured while retrieving records'});
         res.json(data);
-    })
+    });
 }
 
 exports.getUsersByParam = function(req, res, options){
     repository.get(options, function(err, users){
         if (err) res.json({err:err, message:'error, could not retrieve user record'});
         res.json(users);
-    })
+    });
 }
 
 exports.addUser = function(req, res, data){
