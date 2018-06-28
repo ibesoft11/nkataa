@@ -8,7 +8,7 @@ exports.getUserById = function(req, res, id){
 }
 
 exports.getAllUsers = function(req, res){
-    repository.getWithPopulate({},'[posts]', function(err, data){
+    repository.getWithPopulate({},'-password -__v',{path:'posts',select:'-comments -__v'},'', function(err, data){
         if (err) res.json({err:err, message:'sorry an error occured while retrieving records'});
         res.json(data);
     });
